@@ -1,36 +1,92 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Next.js Environment Validation Project
 
-## Getting Started
+This is a Next.js project showcasing how to implement type-safe environment variables using T3 Env and Zod.
 
-First, run the development server:
+## Setup & Running the Project
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+1. **Install dependencies:**
+   ```bash
+   pnpm install
+   # or npm install / yarn / bun
+   ```
+
+2. **Set up Environment Variables:**
+   Create a `.env.development.local` file (or other appropriate `.env` files) and populate the required variables based on `env.ts`.
+
+3. **Run the development server:**
+   ```bash
+   pnpm dev
+   # or npm run dev / yarn dev
+   ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Learning
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Steps for Env Validation
 
-## Learn More
+To implement environment validation in a Next.js project, follow these steps:
 
-To learn more about Next.js, take a look at the following resources:
+1. **Install Packages**
+   Install the required libraries: `@t3-oss/env-nextjs` and `zod`.
+   ```bash
+   pnpm add @t3-oss/env-nextjs zod
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+2. **Create `env.ts` File and Write Validation**
+   Create a single source of truth (`env.ts`) for your environment variables by defining schemas for client and server variables using `zod`.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+3. **Update `next.config.ts`**
+   Import the newly created `env.ts` file at the very top of your Next.js config. This makes sure the validation runs automatically on build/start:
+   ```typescript
+   import "./env";
+   import type { NextConfig } from "next";
+   ```
 
-## Deploy on Vercel
+4. **Add `output` and `transpilePackages` Config**
+   Update the configuration object in `next.config.ts` to include:
+   ```typescript
+   output: process.env.NODE_ENV === "development" ? "standalone" : undefined,
+   transpilePackages: ["@t3-oss/env-nextjs", "@t3-oss/env-core"],
+   ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+**Reference Docs:**
+- [T3 Env Next.js Docs](https://env.t3.gg/docs/nextjs)
+- [Next.js Environment Variables Guide](https://nextjs.org/docs/pages/guides/environment-variables)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+### 📍 Next.js Env Var Load Order (from highest precedence to lowest)
+
+When you run your Next.js app (e.g., `next dev`, `next build`, `next start`):
+
+1. `process.env` – already set environment variables from your shell
+2. `.env.$(NODE_ENV).local` – e.g., `.env.development.local` or `.env.production.local`
+3. `.env.local` – general local overrides (ignored in test mode)
+4. `.env.$(NODE_ENV)` – e.g., `.env.development` or `.env.production`
+5. `.env` – base fallback file if none of the above provided the value
+
+**📌 Notes:**
+
+- `.env.local` overrides defaults from other `.env.*` files.
+- In test environments, Next.js doesn’t load `.env.local`.
+- `NODE_ENV` can be `development`, `production`, or `test`.
+
+**🧠 Example**
+
+If you have:
+- `NODE_ENV=development`
+- `.env`
+- `.env.development`
+- `.env.local`
+- `.env.development.local`
+
+And they all define `API_URL`, Next.js will pick them in this order:
+
+| Priority | File |
+| :--- | :--- |
+| 1 | value already in `process.env` |
+| 2 | `.env.development.local` |
+| 3 | `.env.local` |
+| 4 | `.env.development` |
+| 5 | `.env` |
