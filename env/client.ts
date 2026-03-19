@@ -12,4 +12,5 @@ export const envClient = createEnv({
     NEXT_PUBLIC_APP_BACKEND_URL: process.env.NEXT_PUBLIC_APP_BACKEND_URL,
     NEXT_PUBLIC_IMAGE_FULL_URL: process.env.NEXT_PUBLIC_IMAGE_FULL_URL,
   },
+  // experimental__runtimeEnv: process.env,
 });

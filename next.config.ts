@@ -1,4 +1,5 @@
-import "./env.-oldts"; // <-- this runs the env validator (and will throw if missing)
+// import "./env.-oldts"; // <-- this runs the env validator (and will throw if missing)
+import "./env";
 
 import type { NextConfig } from "next";
 import { envServer } from "./env/server";

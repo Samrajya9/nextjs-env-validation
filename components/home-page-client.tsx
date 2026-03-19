@@ -12,7 +12,7 @@ export default function HomePageClient() {
       <p>{`Mine app backend url is ${envClient.NEXT_PUBLIC_APP_BACKEND_URL}`}</p>
       <p>{`Mine image url is ${envClient.NEXT_PUBLIC_IMAGE_FULL_URL}`}</p>
 
-      <p>{`Mine image base url in serveris ${envServer.IMAGE_BASE_URL}`}</p>
+      <p>{`Mine image base url in server is ${envServer.IMAGE_BASE_URL}`}</p>
       <div className="relative h-[500px] w-[800px] overflow-hidden rounded-xl">
         <Image
           src={envClient.NEXT_PUBLIC_IMAGE_FULL_URL}
