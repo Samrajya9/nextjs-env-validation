@@ -1,15 +1,17 @@
-import "./env"; // <-- this runs the env validator (and will throw if missing)
+import "./env.-oldts"; // <-- this runs the env validator (and will throw if missing)
 
 import type { NextConfig } from "next";
-import { env } from "./env";
+import { envServer } from "./env/server";
 
 const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       {
         protocol:
-          new URL(env.IMAGE_BASE_URL).protocol === "https:" ? "https" : "http",
-        hostname: new URL(env.IMAGE_BASE_URL).hostname,
+          new URL(envServer.IMAGE_BASE_URL).protocol === "https:"
+            ? "https"
+            : "http",
+        hostname: new URL(envServer.IMAGE_BASE_URL).hostname,
       },
     ],
   },
